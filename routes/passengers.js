@@ -6,6 +6,8 @@
 var express = require('express');
 var router = express.Router();
 var util = require('util');
+var mongoose     = require('mongoose');
+
 
 var Passenger = require('../app/models/passenger');
 
@@ -47,9 +49,10 @@ router.route('/passengers')
      * @throws Mongoose Database Error (500 Status Code)
      */
     .post(function(req, res){
-        if(typeof req.body.firstName === 'undefined'){
-            res.status(422).json({"errorCode": "1002", "errorMessage" : util.format("Missing required parameter %s", "firstName"), "statusCode" : "422"});
+        if (typeof req.body.emailAddress === "undefined" || req.body.firstName.length > 15) {
+            res.sendStatus(400);
             return;
+
         }
         /**
          * Add aditional error handling here
@@ -58,7 +61,6 @@ router.route('/passengers')
         var passenger = new Passenger();
         passenger.firstName = req.body.firstName;
         passenger.lastName = req.body.lastName;
-        passenger.dateOfBirth = req.body.dateOfBirth;
         passenger.username = req.body.username;
         passenger.emailAddress = req.body.emailAddress;
         passenger.password = req.body.password;
@@ -73,7 +75,7 @@ router.route('/passengers')
             if(err){
                 res.status(500).send(err);
             }else{
-                res.status(201).json({"message" : "Passenger Created", "passengerCreated" : passenger});
+                res.status(201).json(passenger);
             }
         });
     });
@@ -92,10 +94,20 @@ router.route('/passengers/:passenger_id')
         /**
          * Add extra error handling rules here
          */
+
+        if (!mongoose.Types.ObjectId.isValid(req.params.passenger_id)) {
+            res.status(404).send({errorCode: 4000});
+            return;
+        }
+
         Passenger.findById(req.params.passenger_id, function(err, passenger){
             if(err){
                 res.status(500).send(err);
             }else{
+                if (!passenger)
+                    res.status(404).send({});
+
+                else
                 res.json(passenger);
             }
         });  

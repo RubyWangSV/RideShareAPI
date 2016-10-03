@@ -7,6 +7,9 @@ var express = require('express');
 var router = express.Router();
 var util = require('util');
 
+var mongoose     = require('mongoose');
+
+
 var Car = require('../app/models/car');
 
 router.route('/cars') 
@@ -40,9 +43,10 @@ router.route('/cars')
      * @throws Mongoose Database Error (500 Status Code)
      */
     .post(function(req, res){
-        if(typeof req.body.license === 'undefined'){
-            res.status(422).json({"errorCode": "1002", "errorMessage" : util.format("Missing required parameter %s", "license"), "statusCode" : "422"});
+        if (typeof req.body.make === "undefined" || req.body.make.length > 18) {
+            res.sendStatus(400);
             return;
+
         }
         /**
          * Add aditional error handling here
@@ -58,7 +62,7 @@ router.route('/cars')
             if(err){
                 res.status(500).send(err);
             }else{
-                res.status(201).json({"message" : "Car Created", "carCreated" : car});
+                res.status(201).json(car);
             }
         });
     });
@@ -77,11 +81,19 @@ router.route('/cars/:car_id')
         /**
          * Add extra error handling rules here
          */
+        if (!mongoose.Types.ObjectId.isValid(req.params.car_id)) {
+            res.status(404).send({errorCode: 4000});
+            return;
+        }
+
         Car.findById(req.params.car_id, function(err, car){
             if(err){
                 res.status(500).send(err);
             }else{
-                res.json(car);
+                if (!car)
+                    res.sendStatus(404);
+                else
+                    res.json(car);
             }
         });  
     })
@@ -127,7 +139,7 @@ router.route('/cars/:car_id')
                     if(err){
                         res.status(500).send(err);
                     }else{
-                        res.json({"message" : "Car Updated", "carUpdated" : car});
+                        res.json(car);
                     }
                 });
             }

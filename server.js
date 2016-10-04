@@ -24,11 +24,13 @@ var cars = require('./routes/cars');
 var drivers = require('./routes/drivers');
 var passengers = require('./routes/passengers');
 var paymentAccounts = require('./routes/paymentaccounts');
+var rides = require('./routes/rides');
 
 app.use('/api', cars);
 app.use('/api', drivers);
 app.use('/api', passengers);
 app.use('/api', paymentAccounts);
+app.use('/api', rides);
 app.use('/api', router);
 
 app.use(function(req, res, next) {

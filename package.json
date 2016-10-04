@@ -8,6 +8,7 @@
         "mongoose" : "~4.6.1"
     },
     "devDependencies": { 
-        "supertest" : "2.0.0"
+        "supertest" : "~2.0.0",
+        "typings" : "~1.4.0"
     }
 }

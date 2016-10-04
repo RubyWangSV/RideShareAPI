@@ -10,7 +10,7 @@ var Schema       = mongoose.Schema;
 var PaymentAccountSchema   = new Schema({
     accountType: String,
     accountNumber: Number,
-    expirationDate: Date,
+    expirationDate: Number,
     nameOnAccount: String, 
     bank: String
 });

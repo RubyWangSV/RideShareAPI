@@ -1,4 +1,4 @@
-**Homework due September 02 10AM, 2016**
+**Homework due October 02 10AM, 2016**
 
 ----
 
@@ -50,7 +50,7 @@ _drivers_
 - addressLine1 (String, 50)
 - addressLine2 (String, 50)
 - city (String, 50)
-- state (Stringm 2)
+- state (String, 2)
 - zip (String, 5)
 - phoneNumber (String, Regex XXX-XXX-XXXX, Required)
 - drivingLicense (String, 8-16, Required)
@@ -65,42 +65,42 @@ _passengers_
 - addressLine1 (String, 50)
 - addressLine2 (String, 50)
 - city (String, 50)
-- state (Stringm 2)
+- state (String, 2)
 - zip (String, 5)
 - phoneNumber (String, Regex XXX-XXX-XXXX, Required)
 
 _cars_
 
-- driver (reference)
-- make (String, 18)
-- model (Sring, 18)
-- license (String, 10)
-- doorCount (Number 1-8)
+- driver (reference, Required)
+- make (String, 18, Required)
+- model (Sring, 18, Required)
+- license (String, 10, Required)
+- doorCount (Number 1-8, Required)
 
 _ride_
 
-- passenger (reference)
-- driver (reference)
-- car (reference)
-- rideType (String, ECONOMY, PREMIUM, EXECUTIVE)
-- startPoint  Object(lat: Decimal, long: Decimal) (latitude/longitude combination)
-- endPoint Object (lat: Decimal, long: Decimal) (latitude/longitude combination)
-- requestTime (Number, milliseconds since Epoch)
-- pickupTime // sanem 
-- dropOffTime // same
-- status (REQUESTED, AWAITING_DRIVER, DRIVE_ASSIGNED, IN_PROGRESS, ARRIVED, CLOSED )
-- fare
+- passenger (reference, Required)
+- driver (reference, Required)
+- car (reference, Required)
+- rideType (String, [ECONOMY, PREMIUM, EXECUTIVE], Required)
+- startPoint  Object (lat: Decimal, long: Decimal) (latitude/longitude combination, Required)
+- endPoint Object (lat: Decimal, long: Decimal) (latitude/longitude combination, Required)
+- requestTime (Number, TimeStamp, Required)
+- pickupTime (Number, TimeStamp, Required)
+- dropOffTime (Number, TimeStamp, Required)
+- status (String, [REQUESTED, AWAITING_DRIVER, DRIVE_ASSIGNED, IN_PROGRESS, ARRIVED, CLOSED], Required)
+- fare (Number)
 - route (series of latitude/longitude values)
 
 _paymentAccount_
 
-- accountType (String, 18)
-- accountNumber (Number, 18)
-- expirationDate (Number, Timestamp)(optional, for passenger accounts only)
-- nameOnAccount (String, 18)
-- bank (String, 18) (optional, for driver accounts only)
+- accountType (String, 18, Required)
+- accountNumber (Number, 18, Required)
+- expirationDate (Number, Timestamp, Required for passenger accounts only)
+- nameOnAccount (String, 18, Required)
+- bank (String, 18, Required for driver accounts only)
 
-**Homework due September 06 10AM, 2016**
+**Homework due October 06 10AM, 2016**
 
 How to add population actions: http://mongoosejs.com/docs/populate.html using References (Not required)
 

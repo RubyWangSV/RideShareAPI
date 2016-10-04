@@ -6,6 +6,12 @@ To Setup the Environment for the first time:
 
 npm install
 ```
+To Setup the Intellisense in VisualStudio Code:
+```
+#!javascript
+
+typings install
+```
 To Run Tests:
 ```
 #!javascript

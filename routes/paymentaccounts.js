@@ -16,9 +16,15 @@ router.route('/paymentaccounts')
      * @throws Mongoose Database Error (500 Status Code)
      */
     .get(function(req, res){
+        /**
+         * Add extra error handling rules here
+         */
         PaymentAccount.find(function(err, paymentAccounts){
             if(err){
                 res.status(500).send(err);
+                /**
+                 * Wrap this error into a more comprehensive message for the end-user
+                 */
             }else{
                 res.json(paymentAccounts);
             }
@@ -39,22 +45,9 @@ router.route('/paymentaccounts')
             res.status(422).json({"errorCode": "1002", "errorMessage" : util.format("Missing required parameter %s", "accountType"), "statusCode" : "422"});
             return;
         }
-        if(typeof req.body.accountNumber === 'undefined'){
-            res.status(422).json({"errorCode": "1002", "errorMessage" : util.format("Missing required parameter %s", "accountNumber"), "statusCode" : "422"});
-            return;
-        }
-        if(typeof req.body.expirationDate === 'undefined'){
-            res.status(422).json({"errorCode": "1002", "errorMessage" : util.format("Missing required parameter %s", "expirationDate"), "statusCode" : "422"});
-            return;
-        }
-        if(typeof req.body.nameOnAccount === 'undefined'){
-            res.status(422).json({"errorCode": "1002", "errorMessage" : util.format("Missing required parameter %s", "nameOnAccount"), "statusCode" : "422"});
-            return;
-        }
-        if(typeof req.body.bank === 'undefined'){
-            res.status(422).json({"errorCode": "1002", "errorMessage" : util.format("Missing required parameter %s", "bank"), "statusCode" : "422"});
-            return;
-        }
+        /**
+         * Add aditional error handling here
+         */
 
         var paymentAccount = new PaymentAccount();
         paymentAccount.accountType = req.body.accountType;
@@ -82,7 +75,10 @@ router.route('/paymentaccounts/:paymentaccount_id')
      * @returns {object} the paymentaccount with Id paymentaccount_id. (200 Status Code)
      * @throws Mongoose Database Error (500 Status Code)
      */
-    .get(function(req, res){
+    .get(function(req, res){        
+        /**
+         * Add extra error handling rules here
+         */
         PaymentAccount.findById(req.params.paymentaccount_id, function(err, paymentAccount){
             if(err){
                 res.status(500).send(err);
@@ -107,32 +103,33 @@ router.route('/paymentaccounts/:paymentaccount_id')
             res.status(422).json({"errorCode": "1002", "errorMessage" : util.format("Missing required parameter %s", "accountType"), "statusCode" : "422"});
             return;
         }
-        if(typeof req.body.accountNumber === 'undefined'){
-            res.status(422).json({"errorCode": "1002", "errorMessage" : util.format("Missing required parameter %s", "accountNumber"), "statusCode" : "422"});
-            return;
-        }
-        if(typeof req.body.expirationDate === 'undefined'){
-            res.status(422).json({"errorCode": "1002", "errorMessage" : util.format("Missing required parameter %s", "expirationDate"), "statusCode" : "422"});
-            return;
-        }
-        if(typeof req.body.nameOnAccount === 'undefined'){
-            res.status(422).json({"errorCode": "1002", "errorMessage" : util.format("Missing required parameter %s", "nameOnAccount"), "statusCode" : "422"});
-            return;
-        }
-        if(typeof req.body.bank === 'undefined'){
-            res.status(422).json({"errorCode": "1002", "errorMessage" : util.format("Missing required parameter %s", "bank"), "statusCode" : "422"});
-            return;
-        }
+        /**
+         * Add aditional error handling here
+         */
 
-        PaymentAccount.findById(req.params.paymentaccount_id, function(err, paymentAccount){
+        PaymentAccount.findById(req.params.paymentaccount_id, function(err, car){
             if(err){
                 res.status(500).send(err);
             }else{
-                paymentAccount.accountType = req.body.accountType;
-                paymentAccount.accountNumber = req.body.accountNumber;
-                paymentAccount.expirationDate = req.body.expirationDate;
-                paymentAccount.nameOnAccount = req.body.nameOnAccount;
-                paymentAccount.bank = req.body.bank;
+                for(var key in req.body) {
+                    if(req.body.hasOwnProperty(key)){
+                        if(key == 'accountType'){
+                            /**
+                             * Add extra error handling rules here
+                             */
+                            paymentAccount.accountType = req.body.accountType;
+                        }
+                        if(key == 'accountNumber'){
+                            /**
+                             * Add extra error handling rules here
+                             */
+                            paymentAccount.accountNumber = req.body.accountNumber;
+                        }
+                        /**
+                         * Repeat for the other properties
+                         */
+                    }
+                }
 
                 paymentaccount.save(function(err){
                     if(err){
@@ -149,7 +146,10 @@ router.route('/paymentaccounts/:paymentaccount_id')
      * @returns {object} A string message. (200 Status Code)
      * @throws Mongoose Database Error (500 Status Code)
      */
-    .delete(function(req, res){
+    .delete(function(req, res){  
+        /**
+         * Add extra error handling rules here
+         */
         PaymentAccount.remove({
             _id : req.params.paymentaccount_id
         }, function(err, paymentaccount){

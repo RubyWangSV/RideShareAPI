@@ -6,6 +6,8 @@
 var express = require('express');
 var router = express.Router();
 var util = require('util');
+var mongoose     = require('mongoose');
+
 
 var Driver = require('../app/models/driver');
 
@@ -48,9 +50,10 @@ router.route('/drivers')
      * @throws Mongoose Database Error (500 Status Code)
      */
     .post(function(req, res){
-        if(typeof req.body.firstName === 'undefined'){
-            res.status(422).json({"errorCode": "1002", "errorMessage" : util.format("Missing required parameter %s", "firstName"), "statusCode" : "422"});
+        if (typeof req.body.emailAddress === "undefined" || req.body.firstName.length > 15) {
+            res.sendStatus(400);
             return;
+
         }
         /**
          * Add aditional error handling here
@@ -75,7 +78,7 @@ router.route('/drivers')
             if(err){
                 res.status(500).send(err);
             }else{
-                res.status(201).json({"message" : "Driver Created", "driverCreated" : driver});
+                res.status(201).json(driver);
             }
         });
     });
@@ -94,11 +97,19 @@ router.route('/drivers/:driver_id')
         /**
          * Add extra error handling rules here
          */
+        if (!mongoose.Types.ObjectId.isValid(req.params.driver_id)) {
+            res.status(404).send({errorCode: 4000});
+            return;
+        }
+
         Driver.findById(req.params.driver_id, function(err, driver){
             if(err){
                 res.status(500).send(err);
             }else{
-                res.json(driver);
+                if (!driver)
+                    res.status(404).send({});
+                else
+                    res.json(driver);
             }
         });  
     })

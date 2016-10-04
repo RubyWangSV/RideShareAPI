@@ -8,10 +8,10 @@ var mongoose     = require('mongoose');
 var Schema       = mongoose.Schema;
 
 var CarSchema   = new Schema({
+    make: String,
+    model: String,
     license: String,
     doorCount: Number,
-    make: String,
-    model: String,    
     driver: { type: Schema.Types.ObjectId, ref: 'Driver' }
 });
 

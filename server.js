@@ -15,7 +15,7 @@ app.use(bodyParser.json());
 var port = process.env.PORT || 8080;
 
 var mongoose    = require('mongoose');
-mongoose.connect('mongodb://app_user:password@ds035826.mlab.com:35826/cmu_sv_app');
+mongoose.connect('mongodb://app:app@ds041566.mlab.com:41566/app_uber_ruby');
 /** END: Express Server Configuration */
 
 /** BEGIN: Express Routes Definition */
@@ -34,7 +34,8 @@ app.use('/api', rides);
 app.use('/api', router);
 
 app.use(function(req, res, next) {
-  res.status(404).json({"errorCode": "1012", "errorMessage" : "Invalid Resource Name", "statusCode" : "404"});  
+  res.status(404).json({"errorCode": "1001", "errorMessage" : "Invalid Resource Name", "statusCode" : "404"});
+  return;  
 });
 /** END: Express Routes Definition */
 

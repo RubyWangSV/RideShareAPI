@@ -23,6 +23,28 @@ var RideSchema   = new Schema({
      * - fare (Number)
      * - route (series of latitude/longitude values)
      */
+     passenger: {type: Schema.Types.ObjectId, ref: 'Passenger'},
+     driver: { type: Schema.Types.ObjectId, ref: 'Driver' },
+     car: { type: Schema.Types.ObjectId, ref: 'Car' },
+     rideType: String,
+     startPoint: {
+          lat: Number,
+          long: Number,
+     },
+     endPoint:{
+          lat: Number,
+          long: Number,
+     },
+     requestTime: Number,
+     pickupTime: Number,
+     dropOffTime: Number,
+     status: String,
+     fare: Number,
+     route: { 
+          dot: [Number], 
+          lat: [Number], 
+          long: [Number]
+     }
 });
 
 module.exports = mongoose.model('Ride', RideSchema);

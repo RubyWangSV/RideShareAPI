@@ -23,11 +23,17 @@ router.route('/drivers')
          */
         Driver.find(function(err, drivers){
             if(err){
-                res.status(500).send(err);
+                console.log(err);
+                res.status(500).json({"statusCode" : 404,"errorCode" : 1030,"errorMessage" :"Cannot find driver."});
+                return;
                 /**
                  * Wrap this error into a more comprehensive message for the end-user
                  */
-            }else{
+            }
+            if(passengers == ""){
+                res.status(404).json({"statusCode" : 404,"errorCode" : 1030,"errorMessage" :"No driver data."});                
+            }
+            else{
                 res.json(drivers);
             }
         });
@@ -76,7 +82,8 @@ router.route('/drivers')
 
         driver.save(function(err){
             if(err){
-                res.status(500).send(err);
+                console.log(err);
+                res.status(500).json({"statusCode":500, "errorCode":"5001", "errorMessage": "Cannot save successfully."});
             }else{
                 res.status(201).json(driver);
             }
@@ -161,7 +168,8 @@ router.route('/drivers/:driver_id')
 
                 driver.save(function(err){
                     if(err){
-                        res.status(500).send(err);
+                        console.log(err);
+                        res.status(500).json({"statusCode":500, "errorCode":"5001", "errorMessage": "Cannot save successfully."});
                     }else{
                         res.json({"message" : "Driver Updated", "driverUpdated" : driver});
                     }
@@ -182,7 +190,8 @@ router.route('/drivers/:driver_id')
             _id : req.params.driver_id
         }, function(err, driver){
             if(err){
-                res.status(500).send(err);
+                console.log(err);
+                res.status(500).json({"statusCode":500, "errorCode":"5002", "errorMessage": "Cannot delete successfully."});
             }else{
                 res.json({"message" : "Driver Deleted"});
             }

@@ -58,7 +58,8 @@ router.route('/paymentaccounts')
 
         paymentAccount.save(function(err){
             if(err){
-                res.status(500).send(err);
+                console.log(err);
+                res.status(500).json({"statusCode":500, "errorCode":"5001", "errorMessage": "Cannot save successfully."});
             }else{
                 res.status(201).json({"message" : "PaymentAccount Created", "paymentAccountCreated" : paymentAccount});
             }
@@ -133,7 +134,8 @@ router.route('/paymentaccounts/:paymentaccount_id')
 
                 paymentaccount.save(function(err){
                     if(err){
-                        res.status(500).send(err);
+                        console.log(err);
+                        res.status(500).json({"statusCode":500, "errorCode":"5001", "errorMessage": "Cannot save successfully."});
                     }else{
                         res.json({"message" : "PaymentAccount Updated", "paymentAccountUpdated" : paymentAccount});
                     }
@@ -154,7 +156,9 @@ router.route('/paymentaccounts/:paymentaccount_id')
             _id : req.params.paymentaccount_id
         }, function(err, paymentaccount){
             if(err){
-                res.status(500).send(err);
+                console.log(err);
+                res.status(500).json({"statusCode":500, "errorCode":"5002", "errorMessage": "Cannot delete successfully."});
+                return;
             }else{
                 res.json({"message" : "PaymentAccount Deleted"});
             }

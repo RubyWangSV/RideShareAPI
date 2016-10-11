@@ -32,12 +32,17 @@ router.route('/cars')
          */
         Car.find(function(err, cars){
             if(err){
-                res.status(500).send(err);
+                res.status(500).json({"statusCode" : 504,"errorCode" : 1020,"errorMessage" :"Cannot find car."});
                 return;
                 /**
                  * Wrap this error into a more comprehensive message for the end-user
                  */
-            }else{
+            }            
+            if(cars == ""){
+                res.status(404).json({"statusCode" : 404,"errorCode" : 1020,"errorMessage" :"No car data."});
+                return;                
+            }
+            else{
                 res.json(cars);
                 return;
             }
@@ -110,7 +115,8 @@ router.route('/cars')
 
         car.save(function(err){
             if(err){
-                res.status(500).send(err);
+                console.log(err);
+                res.status(500).json({"statusCode":500, "errorCode":"5001", "errorMessage": "Cannot save successfully."});
             }else{
                 res.status(201).json(car);
             }
@@ -198,15 +204,16 @@ router.route('/cars/:car_id')
                         });
                     }
                 }
-                // car.save(function(err){
-                //     if(err){
-                //         res.status(500).send(err);
-                //         return;
-                //     }else{
-                //         res.json(car);
-                //         return;
-                //     }
-                // });
+                car.save(function(err){
+                    if(err){
+                        console.log(err);
+                        res.status(500).json({"statusCode":500, "errorCode":"5001", "errorMessage": "Cannot save successfully."});
+                        return;
+                    }else{
+                        res.json(car);
+                        return;
+                    }
+                });
             }
         });
     })
@@ -223,14 +230,22 @@ router.route('/cars/:car_id')
             if(err){
                 res.status(500).json({"statusCode" : 400,"errorCode" : 1002,"errorMessage" : "Given car does not exist."});
                 return;
-            }else{
+            }
+            if(!car){
+                res.status(500).json({"statusCode" : 400,"errorCode" : 1002,"errorMessage" : "Given car does not exist."});
+                return;                        
+            }
+            else{
                 Car.remove({
                     _id : req.params.car_id
                 }, function(err, car){
                     if(err){
-                        res.status(500).send(err);
+                        console.log(err);
+                        res.status(500).json({"statusCode":500, "errorCode":"5002", "errorMessage": "Cannot delete successfully."});
                         return;
-                    }else{
+                    }
+
+                    else{
                         res.json({"message" : "Car Deleted"});
                         return;
                     }

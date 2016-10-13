@@ -85,6 +85,34 @@ exports.passengers01_should_create_passenger = function(done){
 /*
 Rides test here
 */
+rideOne = {
+  passenger : passengerOne,
+  driver : driverOne,
+  car : carOne,
+  rideType : "ECONOMY",
+  startPoint : {lat: "123456789", long:"123456789"},
+  endPoint : {},
+  requestTime: "123456789",
+  pickupTime : "123456789",
+  dropOffTime : "0",
+  status : "IN_PROGRESS",
+  fare : 0,
+  route: [{lat: "123456789", long:"123456789"}]
+};
+
+exports.rides01_should_create_ride = function(done){
+  supertest(app)
+  .post('/api/rides')
+  .send(rideOne)
+  .expect(201)
+  .end(function(err, response){
+    assert.ok(typeof response.body === 'object');
+    pasesngerOneId = response.body._id;
+    return done();
+  });
+};
+
+
 exports.cars03_should_delete_car = function(done){
   supertest(app)
       .delete('/api/cars/' + carOneId)

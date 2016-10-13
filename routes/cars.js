@@ -35,9 +35,6 @@ router.route('/cars')
             if(err){
                 res.status(500).json({"statusCode" : 504,"errorCode" : 1020,"errorMessage" :"Cannot find car."});
                 return;
-                /**
-                 * Wrap this error into a more comprehensive message for the end-user
-                 */
             }            
             if(cars == ""){
                 res.status(404).json({"statusCode" : 404,"errorCode" : 1020,"errorMessage" :"No car data."});

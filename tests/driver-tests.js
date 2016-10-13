@@ -8,7 +8,7 @@ driverOne = {
   firstName: "John",
   lastName: "Smith",
   emailAddress: "test-98989@example.com",
-  password: "anypwd",
+  password: "anypwd1234",
   addressLine1: "454 Main Street",
   addressLine2: "",
   city: "Anytown",

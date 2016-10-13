@@ -15,6 +15,7 @@ var Car = require('../app/models/car');
 var CarInfo = 
 {
     Property: ["driver","make","model","license","doorCount"],
+    Required: ["yes","yes","yes","yes","yes"],
     LengthLimit: [0,18,18,10,0],
     NumberLimit: [0,0,0,0,8],
     Type: ["ref","string","string","string","number"]
@@ -70,6 +71,7 @@ router.route('/cars')
         /** Make sure property value - 1. not empty 2.correct type 3. string does not exceed the limit 4. number limit */ 
         for(key in req.body){
             var propertyName = key;
+            var propertyRequired = CarInfo.Required[CarInfo.Property.indexOf(propertyName)];
             var PropertyLengthLit = CarInfo.LengthLimit[CarInfo.Property.indexOf(propertyName)];
             var PropertyNumberLit = CarInfo.NumberLimit[CarInfo.Property.indexOf(propertyName)];
             var PropertyType = CarInfo.Type[CarInfo.Property.indexOf(propertyName)];
@@ -84,7 +86,7 @@ router.route('/cars')
                 res.status(400).json( {"errorCode":"1023", "errorMessage": util.format("Invalid parameter %s",key) });                                
                 return;                
             }
-            if(req.body[key]==""){
+            if(propertyRequired == "yes" && req.body[key] == ""){
                 res.status(400).json( {"errorCode":"1024", "errorMessage": util.format("%s cannot be empty.",key) });                                
                 return;
             }else{
@@ -147,15 +149,14 @@ router.route('/cars/:car_id')
             if(err){
                 res.status(500).json({"statusCode" : 400,"errorCode" : 1002,"errorMessage" : "Given car does not exist."});
                 return;
-            }else{ 
-                if (!car){
-                    res.status(404).json({"statusCode" : 400,"errorCode" : 1002,"errorMessage" : "Given car does not exist."});
-                    return;
-                }
-                else{
-                    res.json(car);
-                    return;
-                }
+            }
+            if (!car){
+                res.status(404).json({"statusCode" : 400,"errorCode" : 1002,"errorMessage" : "Given car does not exist."});
+                return;
+            }
+            else{
+                res.json(car);
+                return;
             }
         });  
     })
@@ -244,7 +245,6 @@ router.route('/cars/:car_id')
                         res.status(500).json({"statusCode":500, "errorCode":"5002", "errorMessage": "Cannot delete successfully."});
                         return;
                     }
-
                     else{
                         res.json({"message" : "Car Deleted"});
                         return;

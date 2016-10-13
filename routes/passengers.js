@@ -14,9 +14,31 @@ var Passenger = require('../app/models/passenger');
 var PassengerInfo = 
 {
     Property: ["firstName","lastName","emailAddress","password","addressLine1","addressLine2","city","state","zip","phoneNumber"],
+    Required: ["no","no","yes","yes","no","no","no","no","no","yes"],
     LengthLimit: [15,15,-2,-1,50,50,50,2,5,-2], //-1:specialstring(password), -2:reegex (emailAddress,phoneNumber), 0 number
     NumberLimit: [],
     Type: ["string","string","string","string","string","string","string","string","string","string"]
+}
+
+var checkEmail = function(request,respnose,key){
+    if(/[a-zA-Z0-9_.]+\@[a-zA-Z](([a-zA-Z0-9-]+).)*/.test(request.body[key]))
+        return true;
+    else
+        return false;
+}
+
+var checkPhoneNumber = function(request,response,key){
+    if(/\d{3}[-]\d{3}[-]\d{4}/.test(request.body[key]))
+        return true;                         
+    else
+        return false;
+}
+
+var checkPassword = function(request,response,key){
+    if(request.body[key].length>=8 &&request.body[key].length<=16)
+        return true;
+    else
+        return false;
 }
 
 router.route('/passengers') 
@@ -39,7 +61,7 @@ router.route('/passengers')
                  */
             }
             if(passengers == ""){
-                res.status(404).json({"statusCode" : 404,"errorCode" : 1040,"errorMessage" :"No passgener data."});                
+                res.status(404).json({"statusCode" : 404,"errorCode" : 1040,"errorMessage" :"No passenger data."});                
             }
             else{
                 res.json(passengers);
@@ -77,6 +99,7 @@ router.route('/passengers')
         /** Make sure property value - 1. not empty 2.correct type 3. string does not exceed the limit 4. number limit */ 
         for(key in req.body){
             var propertyName = key;
+            var propertyRequired = PassengerInfo.Required[PassengerInfo.Property.indexOf(propertyName)];
             var PropertyLengthLit = PassengerInfo.LengthLimit[PassengerInfo.Property.indexOf(propertyName)];
             var PropertyNumberLit = PassengerInfo.NumberLimit[PassengerInfo.Property.indexOf(propertyName)];
             var PropertyType = PassengerInfo.Type[PassengerInfo.Property.indexOf(propertyName)];
@@ -91,7 +114,7 @@ router.route('/passengers')
                 res.status(400).json( {"errorCode":"1043", "errorMessage": util.format("Invalid parameter %s",key) });                                
                 return;                
             }
-            if(req.body[key]==""){
+            if(propertyRequired == "yes" && req.body[key]==""){
                 res.status(400).json( {"errorCode":"1044", "errorMessage": util.format("%s cannot be empty.",key) });                                
                 return;
             }else{
@@ -112,17 +135,17 @@ router.route('/passengers')
                         return;                          
                     }
                 }
-                if(propertyName == "emailAddress"){
-                    if(!/[a-zA-Z0-9_.]+\@[a-zA-Z](([a-zA-Z0-9-]+).)*/.test(req.body[key])){
-                        res.status(400).json( {"statusCode":400, "errorCode":"1048", "errorMessage": "Email format is incorrect." });
-                        return;                             
-                    }
+                if(propertyName == "emailAddress" && !(checkEmail(req,res,key))){
+                    res.status(400).json( {"statusCode":400, "errorCode":"1048", "errorMessage": "Email format is incorrect." });
+                    return;                             
                 }
-                if(propertyName == "phoneNumber"){
-                    if(!/\d{3}[-]\d{3}[-]\d{4}/.test(req.body[key])){
-                        res.status(400).json( {"statusCode":400, "errorCode":"1048", "errorMessage": "Phone number format is XXX-XXX-XXXX." });
-                        return;                         
-                    }
+                if(propertyName == "phoneNumber" && !(checkPhoneNumber(req,res,key))){
+                    res.status(400).json( {"statusCode":400, "errorCode":"1048", "errorMessage": "Phone number format is XXX-XXX-XXXX." });
+                    return;
+                }
+                if(propertyName == "password" && !(checkPassword(req,res,key))){
+                    res.status(400).json( {"statusCode":400, "errorCode":"1048", "errorMessage": "Password must be 8-16 length." });  
+                    return;
                 }
             }
         }
@@ -169,22 +192,18 @@ router.route('/passengers/:passenger_id')
             return;
         }
         Passenger.findById(req.params.passenger_id, function(err, passenger){
-        console.log("passenger"+passenger);
-        console.log("req.params.passenger_id"+req.params.passenger_id);
-
             if(err){
                 res.status(500).json({"statusCode" : 500,"errorCode" : 1004,"errorMessage" :"Given passenger does not exist."});
                 return;
-            }//else{
-                // if (!passenger){
-                //     res.status(404).json({"statusCode" : 404,"errorCode" : 1004,"errorMessage" :"Given passenger does not exist."});
-                //     return;
-                // }
-                else{
-                    res.status(200).json(passenger);                    
-                    return;
-                }
-            //}
+            }
+            if (!passenger){
+                res.status(404).json({"statusCode" : 404,"errorCode" : 1004,"errorMessage" :"Given passenger does not exist."});
+                return;
+            }
+            else{
+                res.status(200).json(passenger);                    
+                return;
+            }
         });  
     })
     /**
@@ -207,30 +226,38 @@ router.route('/passengers/:passenger_id')
         /**
          * Add aditional error handling here
          */
-        Passenger.findById(req.params.passenger_id, function(err, car){
+        Passenger.findById(req.params.passenger_id, function(err, passenger){
             if(err){
-                res.status(500).send(err);
+                res.status(500).json({"statusCode" : 400,"errorCode" : 1004,"errorMessage" : "Given passenger does not exist."});
             }else{
                 for(var key in req.body) {
                     if(req.body.hasOwnProperty(key)){
-                        if(key == 'firstName'){
-                            /**
-                             * Add extra error handling rules here
-                             */
-                            passenger.firstName = req.body.firstName;
-                        }
-                        if(key == 'lastName'){
-                            /**
-                             * Add extra error handling rules here
-                             */
-                            passenger.lastName = req.body.lastName;
-                        }
-                        /**
-                         * Repeat for the other properties
-                         */
+                        PassengerInfo.Property.forEach(function(value,index){
+                            var PropertyType = PassengerInfo.Type[index];
+                            var PropertyLengthLit = PassengerInfo.LengthLimit[index];
+                            var PropertyNumberLit = PassengerInfo.NumberLimit[index];
+                            if (key == value){
+                                if(typeof req.body[key] !== PropertyType && PropertyType !== "ref"){ // Make type is correct
+                                    res.status(400).json( {"statusCode":400, "errorCode":"1045", "errorMessage":util.format("Value of %s must be a %s",key,PropertyType) } );
+                                    return;
+                                }
+                                if(PropertyType == "string"&& PropertyLengthLit>0){ //check string limit                 
+                                    if(req.body[key].length > PropertyLengthLit){
+                                        res.status(400).json( {"statusCode":400, "errorCode":"1046", "errorMessage": util.format("%s exceeds size limit %s",key,PropertyLengthLit) });
+                                        return;                    
+                                    }
+                                }
+                                if(PropertyType == "number"){ //check number limit
+                                    if(req.body[key]<=0 || req.body[key]>PropertyNumberLit){
+                                        res.status(400).json( {"statusCode":400, "errorCode":"1047", "errorMessage": util.format("%s must be within 1~%s",key,PropertyNumberLit) });
+                                        return;                          
+                                    }
+                                }
+                                passenger[value]=req.body[key];  //assign value
+                            }
+                        });
                     }
                 }
-
                 passenger.save(function(err){
                     if(err){
                         console.log(err);

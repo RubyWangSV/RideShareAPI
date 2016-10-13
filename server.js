@@ -25,6 +25,28 @@ var drivers = require('./routes/drivers');
 var passengers = require('./routes/passengers');
 var paymentAccounts = require('./routes/paymentaccounts');
 var rides = require('./routes/rides');
+var sessions = require('./routes/sessions');
+
+// app.use(function()){
+// 	headers = JSON.stringify(req.headers);
+// 	console.log(headers);
+
+// 	if(req.path != 'sessions'){
+// 		if(headers.token === 'undefined'){
+// 			res.status(404).json({"errorCode":"","errorMessage":"Missin token.","statusCode":"404"});
+// 			return;
+// 		}else{
+// 			cryptedHash = base64.decode(headers.token);
+// 			uncryptedHash = CryptoJS.AES.decrypt(cryptedHash,"Secret").toString();
+
+// 			if(expiration <Date.Now()){
+// 				res.status(404).json({"errorCode":"","errorMessage":"Token has expired.","statusCode":"404"});
+// 				return;
+// 			}
+// 		}
+// 	}
+// 	next();
+// });
 
 app.use('/api', cars);
 app.use('/api', drivers);
@@ -32,6 +54,7 @@ app.use('/api', passengers);
 app.use('/api', paymentAccounts);
 app.use('/api', rides);
 app.use('/api', router);
+app.use('/api', sessions);
 
 app.use(function(req, res, next) {
   res.status(404).json({"errorCode": "1001", "errorMessage" : "Invalid Resource Name", "statusCode" : "404"});

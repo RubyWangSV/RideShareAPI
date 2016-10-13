@@ -4,15 +4,46 @@ app = require('../server.js');
 var mongoose     = require('mongoose');
 
 
-rideOne = {
+carOne = {
     make: "Ford",
     model: "Taurus",
     license: "YUE7839",
     doorCount: 4
 };
 
-
 var carOneId;
+
+driverOne = {
+  firstName: "John",
+  lastName: "Smith",
+  emailAddress: "test-98989@example.com",
+  password: "anypwd1234",
+  addressLine1: "454 Main Street",
+  addressLine2: "",
+  city: "Anytown",
+  state: "AS",
+  zip: "83874",
+  phoneNumber: "408-555-2737",
+  drivingLicense: "D162373",
+  licensedState: "CA"
+};
+
+var driverOneId;
+
+passengerOne = {
+  firstName: "John",
+  lastName: "Smith",
+  emailAddress: "test-9876345@example.com",
+  password: "anypwd1234",
+  addressLine1: "454 Main Street",
+  addressLine2: "",
+  city: "Anytown",
+  state: "AS",
+  zip: "83874",
+  phoneNumber: "408-555-2737",
+};
+
+var pasesngerOneId;
 
 exports.cars01_should_create_car = function(done){
   supertest(app)
@@ -20,8 +51,6 @@ exports.cars01_should_create_car = function(done){
   .send(carOne)
   .expect(201)
   .end(function(err, response){
-//    console.log(err);
-//    console.log(response.body);
       assert.ok(typeof response.body === 'object');
       assert.ok(response.body.make === "Ford");
       carOneId = response.body._id;
@@ -29,88 +58,59 @@ exports.cars01_should_create_car = function(done){
   });
 };
 
-exports.cars02_should_get_car = function(done){
+exports.drivers01_should_create_driver = function(done){
   supertest(app)
-      .get('/api/cars/' + carOneId)
-      .expect(200)
-      .end(function(err, response){
-//        console.log(err);
-//        console.log(response.body);
-          assert.ok(response.statusCode == 200);
-        assert.ok(typeof response.body === 'object');
-        return done();
-      });
+  .post('/api/drivers')
+  .send(driverOne)
+  .expect(201)
+  .end(function(err, response){
+    assert.ok(typeof response.body === 'object');
+    driverOneId = response.body._id;
+    return done();
+  });
 };
 
+exports.passengers01_should_create_passenger = function(done){
+  supertest(app)
+  .post('/api/passengers')
+  .send(passengerOne)
+  .expect(201)
+  .end(function(err, response){
+    assert.ok(typeof response.body === 'object');
+    pasesngerOneId = response.body._id;
+    return done();
+  });
+};
 
+/*
+Rides test here
+*/
 exports.cars03_should_delete_car = function(done){
   supertest(app)
       .delete('/api/cars/' + carOneId)
       .expect(200)
       .end(function(err, response){
-//        console.log(err);
-//        console.log(response.body);
-//        assert.ok(typeof response.body === 'object');
           assert.ok(response.statusCode == 200);
         return done();
       });
 };
 
-exports.cars04_should_not_get_deleted_car = function(done){
-    supertest(app)
-        .get('/api/cars/' + carOneId)
-        .expect(404)
-        .end(function(err, response){
-//        console.log(err);
-//        console.log(response);
-            assert.ok(response.statusCode == 404);
-//            assert.ok(typeof response.body === 'object');
-            return done();
-        });
+exports.drivers03_should_delete_driver = function(done){
+  supertest(app)
+      .delete('/api/drivers/' + driverOneId)
+      .expect(200)
+      .end(function(err, response){
+          assert.ok(response.statusCode == 200);
+        return done();
+      });
 };
 
-exports.cars05_should_not_get_random_id_car = function(done){
-    supertest(app)
-        .get('/api/cars/7383883373838')
-        .expect(404)
-        .end(function(err, response){
-//        console.log(err);
-//        console.log(response);
-//            assert.ok(typeof response.body === 'object');
-            assert.ok(response.statusCode == 404);
-            return done();
-        });
-};
-
-
-exports.cars06_should_not_create_car_missing_make = function(done){
-    delete carOne.make;
-    supertest(app)
-        .post('/api/cars')
-        .send(carOne)
-        .expect(400)
-        .end(function(err, response){
-//    console.log(err);
-//    console.log(response.body);
-            assert.ok(response.statusCode == 400);
-            assert.ok(typeof response.body === 'object');
-//            driverOneId = response.body._id;
-            return done();
-        });
-};
-
-exports.cars07_should_not_create_car_with_long_make = function(done){
-    carOne.make = "1234567890123456789";
-    supertest(app)
-        .post('/api/cars')
-        .send(carOne)
-        .expect(400)
-        .end(function(err, response){
-//    console.log(err);
-//    console.log(response);
-            assert.ok(response.statusCode == 400);
-            assert.ok(typeof response.body === 'object');
-//            driverOneId = response.body._id;
-            return done();
-        });
+exports.passengers03_should_delete_passenger = function(done){
+  supertest(app)
+      .delete('/api/passengers/' + pasesngerOneId)
+      .expect(200)
+      .end(function(err, response){
+          assert.ok(response.statusCode == 200);
+        return done();
+      });
 };

@@ -4,7 +4,7 @@ app = require('../server.js');
 var mongoose     = require('mongoose');
 
 
-carOne = {
+var carOne = {
     make: "Ford",
     model: "Taurus",
     license: "YUE7839",
@@ -13,7 +13,7 @@ carOne = {
 
 var carOneId;
 
-driverOne = {
+var driverOne = {
   firstName: "John",
   lastName: "Smith",
   emailAddress: "test-98989@example.com",
@@ -30,7 +30,7 @@ driverOne = {
 
 var driverOneId;
 
-passengerOne = {
+var passengerOne = {
   firstName: "John",
   lastName: "Smith",
   emailAddress: "test-9876345@example.com",

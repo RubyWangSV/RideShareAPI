@@ -15,7 +15,7 @@ driverOne = {
   state: "AS",
   zip: "83874",
   phoneNumber: "408-555-2737",
-  drivingLicense: "D162373",
+  drivingLicense: "D1623732",
   licensedState: "CA"
 };
 

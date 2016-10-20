@@ -86,12 +86,12 @@ exports.passengers01_should_create_passenger = function(done){
 Rides test here
 */
 rideOne = {
-  passenger : passengerOne,
-  driver : driverOne,
-  car : carOne,
+  passenger : pasesngerOneId,
+  driver : driverOneId,
+  car : carOneId,
   rideType : "ECONOMY",
   startPoint : {lat: "123456789", long:"123456789"},
-  endPoint : {},
+  endPoint : {lat: "1234564654", long:"123456987"},
   requestTime: "123456789",
   pickupTime : "123456789",
   dropOffTime : "0",

@@ -63,4 +63,11 @@ router.checkPassword = function(request,key){
         return false;
 }
 
+router.check8to16 = function(request,key){
+    if(request.body[key].length>=8 &&request.body[key].length<=16)
+        return true;
+    else
+        return false;
+}
+
 module.exports = router;

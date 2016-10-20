@@ -37,7 +37,8 @@ router.route('/passengers')
                 return;
             }
             if(passengers == ""){
-                res.status(404).json({"statusCode" : 404,"errorCode" : 1040,"errorMessage" :"No passenger data."});                
+                res.status(404).json({"statusCode" : 404,"errorCode" : 1040,"errorMessage" :"No passenger data."});
+                return;                
             }
             else{
                 res.json(passengers);
@@ -189,7 +190,7 @@ router.route('/passengers/:passenger_id')
     .patch(function(req, res){
         Passenger.findById(req.params.passenger_id, function(err, passenger){
             if(err){
-                res.status(500).json({"statusCode" : 400,"errorCode" : 1004,"errorMessage" : "Given passenger does not exist."});
+                res.status(500).json({"statusCode" : 500,"errorCode" : 1004,"errorMessage" : "Given passenger does not exist."});
                 return;
             }
             if (!passenger){
@@ -251,21 +252,30 @@ router.route('/passengers/:passenger_id')
      * @throws Mongoose Database Error (500 Status Code)
      */
     .delete(function(req, res){
-        /**
-         * Add extra error handling rules here
-         */
-        Passenger.remove({
-            _id : req.params.passenger_id
-        }, function(err, passenger){
+        Passenger.findById(req.params.passenger_id, function(err, passenger){
             if(err){
-                console.log(err);
-                res.status(500).json({"statusCode":500, "errorCode":"5002", "errorMessage": "Cannot delete successfully."});
-                return;
-            }else{
-                res.json({"message" : "Passenger Deleted"});
+                res.status(500).json({"statusCode" : 400,"errorCode" : 1002,"errorMessage" : "Given passenger does not exist."});
                 return;
             }
-        });
+            if(!passenger){
+                res.status(500).json({"statusCode" : 400,"errorCode" : 1002,"errorMessage" : "Given passenger does not exist."});
+                return;                        
+            }
+            else{   
+                Passenger.remove({
+                    _id : req.params.passenger_id
+                }, function(err, passenger){
+                    if(err){
+                        console.log(err);
+                        res.status(500).json({"statusCode":500, "errorCode":"5002", "errorMessage": "Cannot delete successfully."});
+                        return;
+                    }else{
+                        res.json({"message" : "Passenger Deleted"});
+                        return;
+                    }
+                });
+            }
+        });    
     });
 
 module.exports = router;

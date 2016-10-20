@@ -217,9 +217,6 @@ router.route('/cars/:car_id')
      * @throws Mongoose Database Error (500 Status Code)
      */
     .delete(function(req, res){
-        /**
-         * Add extra error handling rules here
-         */
         Car.findById(req.params.car_id, function(err, car){
             if(err){
                 res.status(500).json({"statusCode" : 400,"errorCode" : 1002,"errorMessage" : "Given car does not exist."});

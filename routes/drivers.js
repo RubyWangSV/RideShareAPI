@@ -18,19 +18,13 @@ router.route('/drivers')
      * @throws Mongoose Database Error (500 Status Code)
      */
     .get(function(req, res){
-        /**
-         * Add extra error handling rules here
-         */
         Driver.find(function(err, drivers){
             if(err){
                 console.log(err);
-                res.status(500).json({"statusCode" : 404,"errorCode" : 1030,"errorMessage" :"Cannot find driver."});
+                res.status(500).json({"statusCode" : 500,"errorCode" : 1030,"errorMessage" :"Cannot find driver."});
                 return;
-                /**
-                 * Wrap this error into a more comprehensive message for the end-user
-                 */
             }
-            if(passengers == ""){
+            if(drivers == ""){
                 res.status(404).json({"statusCode" : 404,"errorCode" : 1030,"errorMessage" :"No driver data."});                
             }
             else{
@@ -59,7 +53,6 @@ router.route('/drivers')
         if (typeof req.body.emailAddress === "undefined" || req.body.firstName.length > 15) {
             res.sendStatus(400);
             return;
-
         }
         /**
          * Add aditional error handling here

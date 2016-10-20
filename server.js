@@ -30,38 +30,33 @@ var paymentAccounts = require('./routes/paymentaccounts');
 var rides = require('./routes/rides');
 var sessions = require('./routes/sessions');
 
-app.use(function(req,res,next){
-	// headers = JSON.stringify(req.headers);
-	// console.log("req.path"+req.path);
-	if(req.path !== '/api/sessions'){
-		if(req.headers.token === 'undefined'){
-			res.status(404).json({"errorCode":"","errorMessage":"Missing token.","statusCode":"404"});
-			return;
-		}
-		//console.log("req.headers.token---"+req.headers.token);
-		cryptedHash = base64.decode(req.headers.token);
-		//console.log("cryptedHash---"+cryptedHash);
-		uncryptedHash = CryptoJS.AES.decrypt(cryptedHash,"Secret").toString(CryptoJS.enc.Utf8);
-		//console.log("uncryptedHash---"+uncryptedHash);
+// app.use(function(req,res,next){
+// 	if(req.path !== '/api/sessions'){
+// 		if(req.headers.token === 'undefined'){
+// 			res.status(404).json({"errorCode":"","errorMessage":"Missing token.","statusCode":"404"});
+// 			return;
+// 		}
+// 		cryptedHash = base64.decode(req.headers.token);
+// 		uncryptedHash = CryptoJS.AES.decrypt(cryptedHash,"Secret").toString(CryptoJS.enc.Utf8);
 
-		var username = sessions.getUserName();
-		var expiration = sessions.getExpiration();
-		clearString = username+":"+expiration;
-		hashString = CryptoJS.HmacSHA1(clearString,"APP");
-		console.log("clearString--"+clearString);
-		console.log("hashString--"+hashString);
+// 		var username = sessions.getUserName();
+// 		var expiration = sessions.getExpiration();
+// 		clearString = username+":"+expiration;
+// 		hashString = CryptoJS.HmacSHA1(clearString,"APP");
+// 		console.log("clearString--"+clearString);
+// 		console.log("hashString--"+hashString);
 
-		if(uncryptedHash !== clearString+":"+hashString){
-			res.status(400).json({"errorCode":"","errorMessage":"Invalid token.","statusCode":"400"});
-			return;
-		}
-		if(expiration < parseInt(Date.now()/1000)){
-			res.status(400).json({"errorCode":"","errorMessage":"Expired token.","statusCode":"400"});
-			return;
-		}
-	}
-	next();
-});
+// 		if(uncryptedHash !== clearString+":"+hashString){
+// 			res.status(400).json({"errorCode":"","errorMessage":"Invalid token.","statusCode":"400"});
+// 			return;
+// 		}
+// 		if(expiration < parseInt(Date.now()/1000)){
+// 			res.status(400).json({"errorCode":"","errorMessage":"Expired token.","statusCode":"400"});
+// 			return;
+// 		}
+// 	}
+// 	next();
+// });
 
 app.use('/api', cars);
 app.use('/api', drivers);

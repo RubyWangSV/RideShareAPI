@@ -7,7 +7,7 @@ var mongoose     = require('mongoose');
 var carOne = {
     make: "Ford",
     model: "Taurus",
-    license: "YUE7839",
+    license: "YUE78391",
     doorCount: 4
 };
 
@@ -107,7 +107,7 @@ exports.rides01_should_create_ride = function(done){
   .expect(201)
   .end(function(err, response){
     assert.ok(typeof response.body === 'object');
-    pasesngerOneId = response.body._id;
+    rideOneId = response.body._id;
     return done();
   });
 };
